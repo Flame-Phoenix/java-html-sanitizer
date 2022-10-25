@@ -101,4 +101,25 @@ public class ExamplesTest extends TestCase {
         "<a href=\"../good.html\" rel=\"nofollow\">click here</a>",
         sanitized);
   }
+
+  // when firefox or chrome loads html  
+  // if they found those specific bad comments structures (<!--> or <!--->) they are
+  // fixing them and shows the rest of the content.On the other hand sanitizer keeps looking for
+  // the right comment ending tag structure that can leads to not shows the rest of the content  
+  @Test
+  public static final void testSanitizeBadCommentTagWithoutClosingDash() {
+    String input =
+      "<!--><p>Sanitize <Data Check</p>";
+    String sanitized = EbayPolicyExample.POLICY_DEFINITION.sanitize(input);
+    assertEquals("<p>Sanitize <Data Check</p>", sanitized);
+  }
+  
+  @Test
+  public static final void testSanitizeBadCommentTagWithOnlyOneClosingDash() {
+    String input =
+      "<!---><p>Hello World</p>";
+    String sanitized = EbayPolicyExample.POLICY_DEFINITION.sanitize(input);
+    assertEquals("<p>Hello World</p>", sanitized);
+  }
+
 }

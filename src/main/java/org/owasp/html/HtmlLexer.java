@@ -652,15 +652,25 @@ final class HtmlInputSplitter extends AbstractTokenStream {
                   }
                   break;
                 case COMMENT:
-                  if ('-' == ch) {
+                  if ('>' == ch && input.charAt(end - 1) == '-') {
+                    state = State.COMMENT_DASH_DASH;
+                    --end;
+                    break;
+                  } else if ('-' == ch) {
                     state = State.COMMENT_DASH;
                   }
                   break;
                 case COMMENT_DASH:
-                  state = ('-' == ch)
-                      ? State.COMMENT_DASH_DASH
-                      : State.COMMENT_DASH;
-                  break;
+                  if ('>' == ch && input.charAt(end - 1) == '-') {
+                    state = State.COMMENT_DASH_DASH;
+                    --end;
+                    break;
+                  } else {
+                    state = ('-' == ch)
+                        ? State.COMMENT_DASH_DASH
+                        : State.COMMENT_DASH;
+                    break;
+                  }
                 case COMMENT_DASH_DASH:
                   if ('>' == ch) {
                     state = State.DONE;
